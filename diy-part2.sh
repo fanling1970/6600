@@ -22,5 +22,6 @@
 
 # 应用自定义配置
 cp $GITHUB_WORKSPACE/.config .config
+# 修复正则表达式：启用被注释的CONFIG_PACKAGE_配置
 sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
 make defconfig
