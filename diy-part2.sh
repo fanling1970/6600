@@ -13,9 +13,14 @@
 # 应用自定义配置
 cp $GITHUB_WORKSPACE/.config .config
 
-# 移除可能自动包含的passwall配置
+# 彻底移除passwall相关配置
 sed -i '/CONFIG_PACKAGE_luci-app-passwall/d' .config
 sed -i '/CONFIG_PACKAGE_luci-i18n-passwall/d' .config
+sed -i '/CONFIG_PACKAGE_passwall/d' .config
+
+# 从feeds中移除passwall包
+./scripts/feeds uninstall luci-app-passwall
+./scripts/feeds uninstall luci-i18n-passwall-zh-cn
 
 # 确保SSL库选择正确
 echo "CONFIG_LIBUSTREAM_MBEDTLS=y" >> .config
