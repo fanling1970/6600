@@ -37,13 +37,14 @@ echo "CONFIG_PACKAGE_v2ray-plugin=y" >> .config
 
 # 确保无线WiFi配置
 echo "CONFIG_PACKAGE_kmod-ath10k=y" >> .config
-echo "CONFIG_PACKAGE_kmod-ath10k-ct=y" >> .config
+echo "# CONFIG_PACKAGE_kmod-ath10k-ct is not set" >> .config
 echo "CONFIG_PACKAGE_ath10k-firmware-qca4019=y" >> .config
 echo "CONFIG_PACKAGE_iw=y" >> .config
 echo "CONFIG_PACKAGE_iwinfo=y" >> .config
 echo "CONFIG_PACKAGE_wpad-openssl=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-wireless=y" >> .config
 echo "CONFIG_PACKAGE_luci-i18n-wireless-zh-cn=y" >> .config
+
 
 # 确保TurboACC配置
 echo "CONFIG_PACKAGE_luci-app-turboacc=y" >> .config
