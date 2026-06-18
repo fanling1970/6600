@@ -10,13 +10,7 @@
 # See /LICENSE for more information.
 #
 
-# Uncomment a feed source
-# sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
-
-# Add a feed source
-# echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
-# echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
-
-# 添加自定义软件源
+# 只添加必要的dockerman源
 sed -i '$a src-git dockerman https://github.com/lisaac/luci-app-dockerman' feeds.conf.default
-sed -i '$a src-git ssrplus https://github.com/kenzok8/small-package' feeds.conf.default
+
+# Lean的LEDE源码已包含SSR，不需要额外添加
