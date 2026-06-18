@@ -8,7 +8,6 @@
 #
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
-#
 
 # 应用自定义配置
 cp $GITHUB_WORKSPACE/.config .config
@@ -52,6 +51,5 @@ echo "CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y" >> .config
 
 # 启用所有被注释的CONFIG_PACKAGE_配置（修复的正则表达式）
 sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
-
 
 make defconfig
