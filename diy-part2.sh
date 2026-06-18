@@ -18,3 +18,9 @@
 
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
+
+
+# 应用自定义配置
+cp $GITHUB_WORKSPACE/.config .config
+sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
+make defconfig
