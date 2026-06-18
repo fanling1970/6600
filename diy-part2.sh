@@ -26,7 +26,32 @@ sed -i '/CONFIG_PACKAGE_passwall/d' .config
 echo "CONFIG_LIBUSTREAM_MBEDTLS=y" >> .config
 echo "# CONFIG_LIBUSTREAM_OPENSSL is not set" >> .config
 
-# 修复正则表达式：启用被注释的CONFIG_PACKAGE_配置
+# 确保SSR配置不被覆盖
+echo "CONFIG_PACKAGE_shadowsocksr-libev-ssr-local=y" >> .config
+echo "CONFIG_PACKAGE_shadowsocksr-libev-ssr-redir=y" >> .config
+echo "CONFIG_PACKAGE_shadowsocksr-libev-ssr-server=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> .config
+echo "CONFIG_PACKAGE_luci-i18n-ssr-plus-zh-cn=y" >> .config
+echo "CONFIG_PACKAGE_shadowsocksr-libev-alt=y" >> .config
+echo "CONFIG_PACKAGE_simple-obfs=y" >> .config
+echo "CONFIG_PACKAGE_v2ray-plugin=y" >> .config
+
+# 确保无线WiFi配置
+echo "CONFIG_PACKAGE_kmod-ath10k=y" >> .config
+echo "CONFIG_PACKAGE_kmod-ath10k-ct=y" >> .config
+echo "CONFIG_PACKAGE_ath10k-firmware-qca4019=y" >> .config
+echo "CONFIG_PACKAGE_iw=y" >> .config
+echo "CONFIG_PACKAGE_iwinfo=y" >> .config
+echo "CONFIG_PACKAGE_wpad-openssl=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-wireless=y" >> .config
+echo "CONFIG_PACKAGE_luci-i18n-wireless-zh-cn=y" >> .config
+
+# 确保TurboACC配置
+echo "CONFIG_PACKAGE_luci-app-turboacc=y" >> .config
+echo "CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y" >> .config
+
+# 启用所有被注释的CONFIG_PACKAGE_配置
 sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
 
+# 执行defconfig
 make defconfig
