@@ -51,6 +51,7 @@ echo "CONFIG_PACKAGE_luci-app-turboacc=y" >> .config
 echo "CONFIG_PACKAGE_luci-i18n-turboacc-zh-cn=y" >> .config
 
 # 启用所有被注释的CONFIG_PACKAGE_配置（修复的正则表达式）
-sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config  # ← 这是正确的！
+sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
+
 
 make defconfig
