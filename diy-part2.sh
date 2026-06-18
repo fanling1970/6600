@@ -10,18 +10,18 @@
 # See /LICENSE for more information.
 #
 
-# Modify default IP
-#sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
-
-# Modify default theme
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-
-# Modify hostname
-#sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
-
-
 # 应用自定义配置
 cp $GITHUB_WORKSPACE/.config .config
+
+# 移除可能自动包含的passwall配置
+sed -i '/CONFIG_PACKAGE_luci-app-passwall/d' .config
+sed -i '/CONFIG_PACKAGE_luci-i18n-passwall/d' .config
+
+# 确保SSL库选择正确
+echo "CONFIG_LIBUSTREAM_MBEDTLS=y" >> .config
+echo "# CONFIG_LIBUSTREAM_OPENSSL is not set" >> .config
+
 # 修复正则表达式：启用被注释的CONFIG_PACKAGE_配置
 sed -i 's/^# $CONFIG_PACKAGE_.*$/\1/' .config
+
 make defconfig
