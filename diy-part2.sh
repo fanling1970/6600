@@ -34,3 +34,7 @@ fi
 echo "✅ [DIY-P2] wifi-scripts 已确保启用"
 
 echo "✅ [DIY-P2] 预处理完成，即将执行 make defconfig"
+
+# 修改默认LAN口IP为192.168.100.1
+sed -i 's/192\.168\.[0-9]\{1,3\}\.[0-9]\{1,3\}/192.168.100.1/g' package/base-files/files/bin/config_generate
+echo "✅ [DIY-P2] 已将默认后台IP修改为 192.168.100.1"
