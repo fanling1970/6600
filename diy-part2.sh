@@ -38,3 +38,31 @@ echo "✅ [DIY-P2] 预处理完成，即将执行 make defconfig"
 # 修改默认LAN口IP为192.168.100.1
 sed -i 's/192\.168\.[0-9]\{1,3\}\.[0-9]\{1,3\}/192.168.100.1/g' package/base-files/files/bin/config_generate
 echo "✅ [DIY-P2] 已将默认后台IP修改为 192.168.100.1"
+
+# 1. 延迟 dnsmasq 启动，确保网络接口完全就绪后再响应DHCP
+mkdir -p files/etc/init.d
+cat > files/etc/init.d/dnsmasq-delay <<'EOF'
+#!/bin/sh /etc/rc.common
+START=19
+USE_PROCD=1
+
+start_service() {
+    # 等待LAN口获得有效状态后再启动dnsmasq
+    local i=0
+    while [ $i -lt 15 ]; do
+        if [ -e /sys/class/net/br-lan/operstate ] && \
+           [ "$(cat /sys/class/net/br-lan/operstate)" = "up" ]; then
+            break
+        fi
+        sleep 1
+        i=$((i+1))
+    done
+}
+EOF
+chmod +x files/etc/init.d/dnsmasq-delay
+
+# 2. 缩短LED指示灯的启动闪烁阶段，加速转为运行态(蓝色)
+# 将默认的led启动脚本中的sleep或循环次数减少
+sed -i '/led.*boot\|status_led.*timer/d' etc/rc.local 2>/dev/null || true
+
+echo "✅ [DIY-P2] 已优化DHCP响应时序与LED启动逻辑"
