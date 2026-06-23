@@ -34,14 +34,18 @@ config wifi-iface 'default_radio1'
     option key 'YourPasswordHere'
     option disabled '0'
 
-# ⚠️ 核心修复点：QCN9074 PCIe 射频必须使用此精确路径
+# ⚠️ QCN9074 PCIe 射频修复版
 config wifi-device 'radio2'
     option type 'mac80211'
-    option path 'soc@0/20000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0'
+    # 优先尝试标准 PCIe 路径，若失败 hotplug 脚本会自动修正
+    option path 'pci0000:00/0000:00:00.0/0000:01:00.0'
     option band '5g'
-    option channel '36'
+    # 避开 radio0 的 DFS 信道，使用非 DFS 信道减少初始化冲突
+    option channel '149'
     option htmode 'HE80'
     option country 'US'
+    # 显式声明 cell_density 以增强 PCIe 射频稳定性
+    option cell_density '0'
     option disabled '0'
 
 config wifi-iface 'default_radio2'
@@ -49,6 +53,7 @@ config wifi-iface 'default_radio2'
     option network 'lan'
     option mode 'ap'
     option ssid 'LEDE_5G_Game'
-    option encryption 'psk2+ccmp'
+    # 增加 psk2 兼容模式，防止部分旧设备关联失败导致接口挂起
+    option encryption 'psk2-psk+ccmp'
     option key 'YourPasswordHere'
     option disabled '0'
