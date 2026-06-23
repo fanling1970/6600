@@ -33,13 +33,11 @@ else
 fi
 echo "✅ [DIY-P2] wifi-scripts 已确保启用"
 
-echo "✅ [DIY-P2] 预处理完成，即将执行 make defconfig"
-
-# 修改默认LAN口IP为192.168.100.1
+# 5. 修改默认LAN口IP为192.168.100.1
 sed -i 's/192\.168\.[0-9]\{1,3\}\.[0-9]\{1,3\}/192.168.100.1/g' package/base-files/files/bin/config_generate
 echo "✅ [DIY-P2] 已将默认后台IP修改为 192.168.100.1"
 
-# 1. 延迟 dnsmasq 启动，确保网络接口完全就绪后再响应DHCP
+# 6. 创建完整的 dnsmasq 延迟启动脚本 (修复原版无实际服务启动的问题)
 mkdir -p files/etc/init.d
 cat > files/etc/init.d/dnsmasq-delay <<'EOF'
 #!/bin/sh /etc/rc.common
@@ -47,22 +45,35 @@ START=19
 USE_PROCD=1
 
 start_service() {
-    # 等待LAN口获得有效状态后再启动dnsmasq
+    # 等待 br-lan 接口完全就绪
     local i=0
     while [ $i -lt 15 ]; do
         if [ -e /sys/class/net/br-lan/operstate ] && \
-           [ "$(cat /sys/class/net/br-lan/operstate)" = "up" ]; then
+           [ "$(cat /sys/class/net/br-lan/operstate 2>/dev/null)" = "up" ]; then
             break
         fi
         sleep 1
         i=$((i+1))
     done
+    
+    # 接口就绪后，重启 dnsmasq 使其绑定正确地址
+    /etc/init.d/dnsmasq restart
+}
+
+stop_service() {
+    :
 }
 EOF
 chmod +x files/etc/init.d/dnsmasq-delay
+echo "✅ [DIY-P2] 已创建完整的 dnsmasq 延迟启动脚本"
 
-# 2. 缩短LED指示灯的启动闪烁阶段，加速转为运行态(蓝色)
-# 将默认的led启动脚本中的sleep或循环次数减少
-sed -i '/led.*boot\|status_led.*timer/d' etc/rc.local 2>/dev/null || true
+# 7. 优化 LED 启动逻辑 (修正路径错误)
+# OpenWrt 源码中 rc.local 位于 package/base-files/files/etc/rc.local
+if [ -f "package/base-files/files/etc/rc.local" ]; then
+    sed -i '/led.*boot\|status_led.*timer/d' package/base-files/files/etc/rc.local
+    echo "✅ [DIY-P2] 已优化 LED 启动逻辑"
+else
+    echo "⚠️ [DIY-P2] 未找到 rc.local，跳过 LED 优化"
+fi
 
-echo "✅ [DIY-P2] 已优化DHCP响应时序与LED启动逻辑"
+echo "✅ [DIY-P2] 预处理完成，即将执行 make defconfig"
