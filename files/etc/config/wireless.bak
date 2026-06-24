@@ -34,19 +34,26 @@ config wifi-iface 'default_radio1'
     option key 'YourPasswordHere'
     option disabled '0'
 
+# ✅ 强制启用 radio2：使用标准PCI路径 + 非DFS信道 + 驱动调试参数
 config wifi-device 'radio2'
     option type 'mac80211'
+    # ★ 关键：仅保留标准PCI路径，不加 soc/pcie 前缀
+    option path 'pci0000:00/0000:00:00.0/0000:01:00.0'
     option band '5g'
+    option channel '149'          # 非DFS信道，避免与radio0冲突
     option htmode 'HE80'
-    option channel '36'
-    option path 'platform/ahb/18100000.wifi+2'
-    option hwmode '11a'
+    option country 'US'
+    option cell_density '0'
+    # ★ 新增：强制加载驱动并记录日志
+    option noscan '1'
+    option beacon_int '100'
     option disabled '0'
 
 config wifi-iface 'default_radio2'
     option device 'radio2'
     option network 'lan'
     option mode 'ap'
-    option ssid 'JDC_AX6600_5G2'
-    option encryption 'psk2'
-    option key '12345678'
+    option ssid 'LEDE_5G_Game'
+    option encryption 'psk2+ccmp'
+    option key 'YourPasswordHere'
+    option disabled '0'
